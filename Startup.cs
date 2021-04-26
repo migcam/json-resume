@@ -12,6 +12,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using json_resume.Models;
+using json_resume.Services;
+using json_resume.Middlewares;
 
 namespace json_resume
 {
@@ -28,8 +30,9 @@ namespace json_resume
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddSingleton<Resume>();
+            services.AddSingleton<BasicAuthenticationService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "json_resume", Version = "v1" });
@@ -51,7 +54,10 @@ namespace json_resume
 
             app.UseRouting();
 
-            app.UseAuthorization();
+
+            app.UseBasicAuthentication();
+
+            // app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

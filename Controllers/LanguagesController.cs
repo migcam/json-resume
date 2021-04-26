@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using json_resume.Models;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace json_resume.Controllers
 {
@@ -102,6 +103,19 @@ namespace json_resume.Controllers
         public ActionResult Head()
         {
             return NoContent();
+        }
+
+        [HttpPatch("{language}")]
+        public ActionResult<Language> PartialUpdate([FromRoute] string language, 
+        [FromBody] JsonPatchDocument<Language> patchDocument)
+        {
+            if(language == null  || language == "" || patchDocument == null)
+                return BadRequest();
+
+            var obj = _resume.languages.FirstOrDefault(o => o.language == language);
+            patchDocument.ApplyTo(obj);
+
+            return Ok(obj);
         }
     }
 }

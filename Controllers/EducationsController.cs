@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using json_resume.Models;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace json_resume.Controllers
 {
@@ -102,6 +103,19 @@ namespace json_resume.Controllers
         public ActionResult Head()
         {
             return NoContent();
+        }
+
+        [HttpPatch("{institution}")]
+        public ActionResult<Education> PartialUpdate([FromRoute] string institution, 
+        [FromBody] JsonPatchDocument<Education> patchDocument)
+        {
+            if(institution == null  || institution == "" || patchDocument == null)
+                return BadRequest();
+
+            var obj = _resume.educations.FirstOrDefault(o => o.institution == institution);
+            patchDocument.ApplyTo(obj);
+
+            return Ok(obj);
         }
     }
 }

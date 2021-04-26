@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using json_resume.Models;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace json_resume.Controllers
 {
@@ -61,6 +62,18 @@ namespace json_resume.Controllers
         public ActionResult Head()
         {
             return NoContent();
+        }
+
+        [HttpPatch]
+        public ActionResult<Location> PartialUpdate([FromBody] JsonPatchDocument<Location> patchDocument)
+        {
+            if(patchDocument == null)
+                return BadRequest();
+
+            var obj = _resume.basics.location;
+            patchDocument.ApplyTo(obj);
+
+            return Ok(obj);
         }
     }
 }
