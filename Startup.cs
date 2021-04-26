@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using json_resume.Models;
 
 namespace json_resume
 {
@@ -28,6 +29,7 @@ namespace json_resume
         {
 
             services.AddControllers();
+            services.AddSingleton<Resume>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "json_resume", Version = "v1" });
@@ -45,6 +47,7 @@ namespace json_resume
             }
 
             app.UseHttpsRedirection();
+
 
             app.UseRouting();
 
